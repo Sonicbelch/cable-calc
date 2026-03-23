@@ -1,13 +1,15 @@
 import './globals.css';
 
 export const metadata = {
-  metadataBase: new URL('https://example.com'),
-  title: 'BS 7671 Cable Size Calculator | UK Cable Sizing Tool',
-  description: 'Free UK BS 7671 cable size calculator for current-carrying capacity, voltage drop and adiabatic checks.',
+  metadataBase: new URL('https://tools.eoclondon.com'),
+  title: {
+    default: 'Free BS 7671 Electrical Design Tools | EOC Tools',
+    template: '%s | EOC Tools'
+  },
+  description: 'Free UK electrical design calculators — cable sizing, voltage drop, adiabatic CPC and Zs / disconnection checks. Built to BS 7671 by EOC London.',
   openGraph: {
-    title: 'BS 7671 Cable Size Calculator',
-    description: 'Size UK cables with BS 7671-style design checks for Ib, In, Iz, voltage drop and adiabatic sizing.',
-    type: 'website'
+    siteName: 'EOC Tools',
+    type: 'website',
   }
 };
 

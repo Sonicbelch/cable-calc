@@ -113,11 +113,108 @@ textarea { min-height: 100px; resize: vertical; }
   .assumptions-grid { grid-template-columns: 1fr; }
 }
 
+/* Nav */
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 0 28px;
+  flex-wrap: wrap;
+}
+.nav-brand {
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: var(--text);
+  margin-right: 12px;
+  white-space: nowrap;
+}
+.nav-brand-eoc { color: var(--primary); }
+.nav-links { display: flex; gap: 6px; flex-wrap: wrap; }
+.nav-link {
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--muted);
+  border: 1px solid transparent;
+  transition: all 0.15s;
+}
+.nav-link:hover { background: #f0f4ff; color: var(--primary); }
+.nav-link.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+/* Hero variants */
+.hero-slim { grid-template-columns: 1fr; padding: 20px 0 8px; }
+.hero-slim h1 { font-size: clamp(1.8rem, 4vw, 3rem); margin: 0 0 12px; }
+
+/* Tools grid on home page */
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  margin: 8px 0 24px;
+}
+.tool-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--text);
+  transition: box-shadow 0.15s, transform 0.15s;
+}
+.tool-card:hover { box-shadow: 0 24px 56px rgba(20,32,51,0.13); transform: translateY(-2px); }
+.tool-card h2 { margin: 0; font-size: 1.15rem; color: var(--primary); }
+.tool-card p { margin: 0; font-size: 0.92rem; color: var(--muted); line-height: 1.55; }
+.tool-tags { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; padding: 0; margin: 4px 0 0; }
+.tool-tags li {
+  font-size: 0.78rem;
+  background: #f0f4ff;
+  color: var(--primary);
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-weight: 600;
+}
+.tool-link { font-size: 0.9rem; font-weight: 700; color: var(--primary); margin-top: auto; }
+
+/* Single-col calculator layout */
+.calculator-shell.single-col {
+  grid-template-columns: 1fr;
+}
+
+/* Lead capture CTA */
+.lead-capture {
+  margin: 0 0 24px;
+  background: linear-gradient(135deg, #1040a0 0%, var(--primary) 100%);
+  border-color: transparent;
+  color: #fff;
+}
+.lead-capture-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.lead-capture .eyebrow { color: rgba(255,255,255,0.7); }
+.lead-capture h2 { color: #fff; margin: 6px 0 8px; font-size: 1.4rem; }
+.lead-capture p { color: rgba(255,255,255,0.85); margin: 0; max-width: 55ch; }
+.lead-cta {
+  background: #fff;
+  color: var(--primary);
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-size: 1rem;
+  padding: 14px 24px;
+}
+.lead-cta:hover { background: #f0f4ff; }
+
 @media (max-width: 960px) {
   .hero, .calculator-shell, .content-grid { grid-template-columns: 1fr; }
+  .tools-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 720px) {
   .grid.two-col, .result-grid { grid-template-columns: 1fr; }
   .page { padding-inline: 14px; }
+  .lead-capture-inner { flex-direction: column; align-items: flex-start; }
+  .assumptions-grid { grid-template-columns: 1fr; }
 }
