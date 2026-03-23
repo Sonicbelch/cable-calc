@@ -76,6 +76,43 @@ textarea { min-height: 100px; resize: vertical; }
 .faq-list summary { font-weight: 700; cursor: pointer; }
 .faq-list p, .panel p, .result-panel p, li { color: var(--muted); line-height: 1.6; }
 
+/* Workings / derivation text */
+.workings {
+  margin: 4px 0 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.5;
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+}
+.check-card.pass .workings { border-color: rgba(13,107,51,0.2); color: var(--success-text); opacity: 0.85; }
+.check-card.fail .workings { border-color: rgba(157,32,32,0.2); color: var(--danger-text); opacity: 0.85; }
+.workings-note { font-style: italic; opacity: 0.8; }
+
+/* Assumptions panel */
+.assumptions-panel { margin: 0 0 24px; }
+.assumptions-panel h2 { margin: 0 0 20px; }
+.assumptions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+.assumption-block h3 { font-size: 0.95rem; margin: 0 0 10px; color: var(--text); }
+.assumption-block ul { margin: 0; padding-left: 18px; }
+.assumption-block li { font-size: 0.9rem; margin-bottom: 6px; }
+.warning-block {
+  background: #fffbea;
+  border: 1px solid #f0c040;
+  border-radius: 16px;
+  padding: 18px;
+}
+.warning-block h3 { color: #7a5200; }
+.warning-block p { color: #5c3d00; font-size: 0.9rem; margin: 0; line-height: 1.6; }
+
+@media (max-width: 720px) {
+  .assumptions-grid { grid-template-columns: 1fr; }
+}
+
 @media (max-width: 960px) {
   .hero, .calculator-shell, .content-grid { grid-template-columns: 1fr; }
 }
