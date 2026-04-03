@@ -1,5 +1,7 @@
 import './globals.css';
 
+const GA_ID = 'G-LHQ0QXW39V';
+
 export const metadata = {
   metadataBase: new URL('https://tools.eoclondon.com'),
   title: {
@@ -16,6 +18,15 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en-GB">
+      <head>
+        <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} />
+        <script dangerouslySetInnerHTML={{ __html: `
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', '${GA_ID}', { cookie_flags: 'SameSite=None;Secure' });
+        `}} />
+      </head>
       <body>{children}</body>
     </html>
   );
