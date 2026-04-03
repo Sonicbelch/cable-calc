@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { defaultDisconnectionTimes, adiabaticK, ambientTempFactors, groupingFactors, installationMethodFactor } from '@/lib/cable-data';
+import { adiabaticK, ambientTempFactors, groupingFactors, installationMethodFactor } from '@/lib/cable-data';
 import {
   computeAdiabaticS,
   computeIb,
@@ -28,7 +28,7 @@ const CABLE_TYPES = [
 
 const initialState = {
   supply: '1P',
-  circuitType: 'socket-radial',
+  circuitType: 'other',
   installationMethod: 'C',
   ambientTemp: 30,
   grouping: 1,
@@ -47,7 +47,7 @@ const initialState = {
   applianceBasket: [1500, 1200],
   basketText: defaultBasket,
   faultCurrent: 3000,
-  disconnectionTime: defaultDisconnectionTimes['socket-radial']
+  disconnectionTime: 0.4
 };
 
 function IbWorkings({ form, ib }) {
@@ -105,7 +105,7 @@ function VdWorkings({ form, selectedCable, ib, voltageDrop, voltageDropLimit }) 
     <p className="workings">
       Vd = (mV/A/m × Ib × L) ÷ 1000 = ({mv} × {ib.toFixed(2)} × {form.length}) ÷ 1000 = <strong>{voltageDrop.toFixed(2)} V</strong>
       <br />Limit = {pct}% × {nominalV} V = <strong>{voltageDropLimit.toFixed(2)} V</strong>
-      <br /><span className="workings-note">mV/A/m from BS 7671 Appendix 4 for {selectedCable.size} mm² {form.conductor} ({form.supply === '3P' ? '3-phase' : 'single-phase'})</span>
+      <br /><span className="workings-note">mV/A/m from BS 7671 Appendix 4 for {selectedCable.size} mm² {form.conductor} ({form.supply === '3P' ? '3-phase' : 'single-phase'}). Limit: {form.circuitType === 'lighting' ? '3' : '5'}% of nominal voltage per BS 7671 App. 12</span>
     </p>
   );
 }
@@ -138,7 +138,7 @@ export function Calculator() {
   const updateField = (key, value) => {
     setForm((current) => {
       const next = { ...current, [key]: value };
-      if (key === 'circuitType') next.disconnectionTime = defaultDisconnectionTimes[value];
+      // circuitType only affects voltage drop limit (3% lighting, 5% other)
       if (key === 'cableType') {
         const ct = CABLE_TYPES.find(t => t.id === value);
         if (ct) {
@@ -162,7 +162,7 @@ export function Calculator() {
           <p>Set the installation assumptions below to estimate a candidate cable size and review key design checks.</p>
           <div className="grid two-col">
             <label><span>Supply</span><select value={form.supply} onChange={(e) => updateField('supply', e.target.value)}><option value="1P">1φ</option><option value="3P">3φ</option></select></label>
-            <label><span>Circuit type</span><select value={form.circuitType} onChange={(e) => updateField('circuitType', e.target.value)}><option value="lighting">Lighting</option><option value="socket-radial">Socket radial</option><option value="ring-final">Ring final</option><option value="motor">Motor</option><option value="submain">Submain</option></select></label>
+            <label><span>Circuit type</span><select value={form.circuitType} onChange={(e) => updateField('circuitType', e.target.value)}><option value="lighting">Lighting (3% Vd limit)</option><option value="other">Other — power, sockets, submain (5% Vd limit)</option></select></label>
             <label><span>Installation method</span><select value={form.installationMethod} onChange={(e) => updateField('installationMethod', e.target.value)}><option value="A">Method A</option><option value="B">Method B</option><option value="C">Method C</option><option value="100">Ref 100</option><option value="102">Ref 102</option><option value="103">Ref 103</option></select></label>
             <label><span>Ambient temp (°C)</span><input type="number" value={form.ambientTemp} onChange={(e) => updateField('ambientTemp', Number(e.target.value))} /></label>
             <label><span>Grouping</span><input type="number" min="1" max="6" value={form.grouping} onChange={(e) => updateField('grouping', Number(e.target.value))} /></label>
