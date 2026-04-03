@@ -129,6 +129,9 @@ textarea { min-height: 100px; resize: vertical; }
   white-space: nowrap;
 }
 .nav-brand-eoc { color: var(--primary); }
+.nav-logo-icon { height: 36px; width: auto; display: inline-block; }
+.nav-logo-text { height: 20px; width: auto; display: inline-block; margin-left: 6px; }
+@media (max-width: 480px) { .nav-logo-text { display: none; } }
 .nav-links { display: flex; gap: 6px; flex-wrap: wrap; }
 .nav-link {
   padding: 7px 14px;
