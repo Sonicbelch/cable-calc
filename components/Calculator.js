@@ -15,6 +15,17 @@ import {
 
 const defaultBasket = '1500, 1200';
 
+// Cable types → maps to insulation temp class and suggested install method
+const CABLE_TYPES = [
+  { id: '6242Y',       label: '6242Y — Flat twin & earth, 70°C PVC',      insulation: 'PVC',  defaultMethod: 'C', table: '4D5'  },
+  { id: '6243Y',       label: '6243Y — Flat 3-core + earth, 70°C PVC',    insulation: 'PVC',  defaultMethod: 'C', table: '4D5'  },
+  { id: 'singles-pvc', label: 'Singles in conduit/trunking, 70°C PVC',    insulation: 'PVC',  defaultMethod: 'B', table: '4D1A' },
+  { id: 'singles-xlpe',label: 'Singles in conduit/trunking, 90°C XLPE',   insulation: 'XLPE', defaultMethod: 'B', table: '4E1A' },
+  { id: 'swa-pvc',     label: 'SWA armoured multicore, 70°C PVC',         insulation: 'PVC',  defaultMethod: 'C', table: '4D4A' },
+  { id: 'swa-xlpe',    label: 'SWA armoured multicore, 90°C XLPE',        insulation: 'XLPE', defaultMethod: 'C', table: '4E4A' },
+  { id: 'lszh',        label: 'LSZH / LSOH, 70°C (similar to PVC)',       insulation: 'PVC',  defaultMethod: 'C', table: '4D5'  },
+];
+
 const initialState = {
   supply: '1P',
   earthing: 'TN-C-S',
@@ -24,6 +35,7 @@ const initialState = {
   grouping: 1,
   insulationFactor: 1,
   length: 25,
+  cableType: '6242Y',
   conductor: 'Cu',
   insulation: 'PVC',
   deviceType: 'MCB',
@@ -129,6 +141,13 @@ export function Calculator() {
     setForm((current) => {
       const next = { ...current, [key]: value };
       if (key === 'circuitType') next.disconnectionTime = defaultDisconnectionTimes[value];
+      if (key === 'cableType') {
+        const ct = CABLE_TYPES.find(t => t.id === value);
+        if (ct) {
+          next.insulation = ct.insulation;
+          next.installationMethod = ct.defaultMethod;
+        }
+      }
       return next;
     });
   };
@@ -152,8 +171,9 @@ export function Calculator() {
             <label><span>Grouping</span><input type="number" min="1" max="6" value={form.grouping} onChange={(e) => updateField('grouping', Number(e.target.value))} /></label>
             <label><span>Insulation factor</span><input type="number" step="0.01" value={form.insulationFactor} onChange={(e) => updateField('insulationFactor', Number(e.target.value))} /></label>
             <label><span>Length (m)</span><input type="number" value={form.length} onChange={(e) => updateField('length', Number(e.target.value))} /></label>
+            <label className="full"><span>Cable type</span><select value={form.cableType} onChange={(e) => updateField('cableType', e.target.value)}>{CABLE_TYPES.map(t => <option key={t.id} value={t.id}>{t.label}</option>)}</select></label>
             <label><span>Conductor</span><select value={form.conductor} onChange={(e) => updateField('conductor', e.target.value)}><option>Cu</option><option>Al</option></select></label>
-            <label><span>Insulation</span><select value={form.insulation} onChange={(e) => updateField('insulation', e.target.value)}><option>PVC</option><option>XLPE</option></select></label>
+            <label><span>Insulation class</span><select value={form.insulation} onChange={(e) => updateField('insulation', e.target.value)}><option>PVC</option><option>XLPE</option></select></label>
             <label><span>Device type</span><select value={form.deviceType} onChange={(e) => updateField('deviceType', e.target.value)}><option>MCB</option><option>RCBO</option><option>Fuse</option></select></label>
             <label><span>In (A)</span><input type="number" value={form.protectiveDeviceRating} onChange={(e) => updateField('protectiveDeviceRating', Number(e.target.value))} /></label>
             <label><span>Load input mode</span><select value={form.loadInputMode} onChange={(e) => updateField('loadInputMode', e.target.value)}><option value="A">Design current (A)</option><option value="power">W / kW with PF + η</option><option value="apparent">VA / kVA</option><option value="basket">Appliance basket</option></select></label>
@@ -180,8 +200,8 @@ export function Calculator() {
             </div>
             <div className="metric-card">
               <strong>Selected cable</strong>
-              <span>{selectedCable ? `${selectedCable.size} mm² ${form.conductor}` : 'No match'}</span>
-              {selectedCable && <p className="workings">First size where tabulated current ÷ correction factor ≥ In ({form.protectiveDeviceRating} A)</p>}
+              <span>{selectedCable ? `${selectedCable.size} mm² ${form.conductor} ${form.insulation}` : 'No match'}</span>
+              {selectedCable && <p className="workings">{CABLE_TYPES.find(t => t.id === form.cableType)?.label} — First size where tabulated current ÷ correction factor ≥ In ({form.protectiveDeviceRating} A)</p>}
             </div>
             <div className="metric-card">
               <strong>Corrected Iz</strong>
