@@ -28,7 +28,6 @@ const CABLE_TYPES = [
 
 const initialState = {
   supply: '1P',
-  earthing: 'TN-C-S',
   circuitType: 'socket-radial',
   installationMethod: 'C',
   ambientTemp: 30,
@@ -38,7 +37,6 @@ const initialState = {
   cableType: '6242Y',
   conductor: 'Cu',
   insulation: 'PVC',
-  deviceType: 'MCB',
   protectiveDeviceRating: 32,
   loadInputMode: 'A',
   designCurrent: 24,
@@ -164,7 +162,6 @@ export function Calculator() {
           <p>Set the installation assumptions below to estimate a candidate cable size and review key design checks.</p>
           <div className="grid two-col">
             <label><span>Supply</span><select value={form.supply} onChange={(e) => updateField('supply', e.target.value)}><option value="1P">1φ</option><option value="3P">3φ</option></select></label>
-            <label><span>Earthing</span><select value={form.earthing} onChange={(e) => updateField('earthing', e.target.value)}><option>TN-S</option><option>TN-C-S</option><option>TT</option></select></label>
             <label><span>Circuit type</span><select value={form.circuitType} onChange={(e) => updateField('circuitType', e.target.value)}><option value="lighting">Lighting</option><option value="socket-radial">Socket radial</option><option value="ring-final">Ring final</option><option value="motor">Motor</option><option value="submain">Submain</option></select></label>
             <label><span>Installation method</span><select value={form.installationMethod} onChange={(e) => updateField('installationMethod', e.target.value)}><option value="A">Method A</option><option value="B">Method B</option><option value="C">Method C</option><option value="100">Ref 100</option><option value="102">Ref 102</option><option value="103">Ref 103</option></select></label>
             <label><span>Ambient temp (°C)</span><input type="number" value={form.ambientTemp} onChange={(e) => updateField('ambientTemp', Number(e.target.value))} /></label>
@@ -174,8 +171,7 @@ export function Calculator() {
             <label className="full"><span>Cable type</span><select value={form.cableType} onChange={(e) => updateField('cableType', e.target.value)}>{CABLE_TYPES.map(t => <option key={t.id} value={t.id}>{t.label}</option>)}</select></label>
             <label><span>Conductor</span><select value={form.conductor} onChange={(e) => updateField('conductor', e.target.value)}><option>Cu</option><option>Al</option></select></label>
             <label><span>Insulation class</span><select value={form.insulation} onChange={(e) => updateField('insulation', e.target.value)}><option>PVC</option><option>XLPE</option></select></label>
-            <label><span>Device type</span><select value={form.deviceType} onChange={(e) => updateField('deviceType', e.target.value)}><option>MCB</option><option>RCBO</option><option>Fuse</option></select></label>
-            <label><span>In (A)</span><input type="number" value={form.protectiveDeviceRating} onChange={(e) => updateField('protectiveDeviceRating', Number(e.target.value))} /></label>
+            <label><span>Protective device rating — In (A)</span><input type="number" value={form.protectiveDeviceRating} onChange={(e) => updateField('protectiveDeviceRating', Number(e.target.value))} /></label>
             <label><span>Load input mode</span><select value={form.loadInputMode} onChange={(e) => updateField('loadInputMode', e.target.value)}><option value="A">Design current (A)</option><option value="power">W / kW with PF + η</option><option value="apparent">VA / kVA</option><option value="basket">Appliance basket</option></select></label>
             {form.loadInputMode === 'A' && <label><span>Ib input (A)</span><input type="number" value={form.designCurrent} onChange={(e) => updateField('designCurrent', Number(e.target.value))} /></label>}
             {form.loadInputMode === 'power' && <><label><span>Power (W)</span><input type="number" value={form.powerWatts} onChange={(e) => updateField('powerWatts', Number(e.target.value))} /></label><label><span>Power factor</span><input type="number" step="0.01" value={form.powerFactor} onChange={(e) => updateField('powerFactor', Number(e.target.value))} /></label><label><span>Efficiency</span><input type="number" step="0.01" value={form.efficiency} onChange={(e) => updateField('efficiency', Number(e.target.value))} /></label></>}
@@ -231,7 +227,7 @@ export function Calculator() {
             <div className="check-card placeholder">
               <strong>Zs / disconnection</strong>
               <span>Not yet implemented</span>
-              <p className="workings">Automated Zs verification requires tabulated maximum Zs values for {form.deviceType} devices on {form.earthing} systems (BS 7671 Tables 41.2–41.4). Verify manually against the appropriate table for your protective device.</p>
+              <p className="workings">Automated Zs verification requires tabulated maximum Zs values for your protective device type and rating (BS 7671 Tables 41.2–41.4). Use the <a href="/zs">Zs checker tool</a> to verify manually.</p>
             </div>
           </div>
         </div>
