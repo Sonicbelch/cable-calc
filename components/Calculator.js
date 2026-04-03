@@ -26,6 +26,16 @@ const CABLE_TYPES = [
   { id: 'lszh',        label: 'LSZH / LSOH, 70°C (similar to PVC)',       insulation: 'PVC',  defaultMethod: 'C', table: '4D5'  },
 ];
 
+
+// Methods where Ci is always 1.0 (no thermal insulation concern)
+const CI_NOT_APPLICABLE = ['C', '100', '102', '103'];
+
+const CI_OPTIONS = [
+  { value: 1,    label: 'Ci = 1.0 — No contact with thermal insulation' },
+  { value: 0.75, label: 'Ci = 0.75 — Cable touching insulation on one side' },
+  { value: 0.5,  label: 'Ci = 0.5 — Cable fully surrounded by insulation (>0.5 m)' },
+];
+
 const initialState = {
   supply: '1P',
   circuitType: 'other',
@@ -139,6 +149,7 @@ export function Calculator() {
     setForm((current) => {
       const next = { ...current, [key]: value };
       // circuitType only affects voltage drop limit (3% lighting, 5% other)
+      if (key === 'installationMethod' && CI_NOT_APPLICABLE.includes(value)) next.insulationFactor = 1;
       if (key === 'cableType') {
         const ct = CABLE_TYPES.find(t => t.id === value);
         if (ct) {
@@ -166,7 +177,9 @@ export function Calculator() {
             <label><span>Installation method</span><select value={form.installationMethod} onChange={(e) => updateField('installationMethod', e.target.value)}><option value="A">Method A</option><option value="B">Method B</option><option value="C">Method C</option><option value="100">Ref 100</option><option value="102">Ref 102</option><option value="103">Ref 103</option></select></label>
             <label><span>Ambient temp (°C)</span><input type="number" value={form.ambientTemp} onChange={(e) => updateField('ambientTemp', Number(e.target.value))} /></label>
             <label><span>Grouping</span><input type="number" min="1" max="6" value={form.grouping} onChange={(e) => updateField('grouping', Number(e.target.value))} /></label>
-            <label><span>Insulation factor</span><input type="number" step="0.01" value={form.insulationFactor} onChange={(e) => updateField('insulationFactor', Number(e.target.value))} /></label>
+            {!CI_NOT_APPLICABLE.includes(form.installationMethod) && (
+              <label className="full"><span>Ci — Thermal insulation factor</span><select value={form.insulationFactor} onChange={(e) => updateField('insulationFactor', Number(e.target.value))}>{CI_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}</select></label>
+            )}
             <label><span>Length (m)</span><input type="number" value={form.length} onChange={(e) => updateField('length', Number(e.target.value))} /></label>
             <label className="full"><span>Cable type</span><select value={form.cableType} onChange={(e) => updateField('cableType', e.target.value)}>{CABLE_TYPES.map(t => <option key={t.id} value={t.id}>{t.label}</option>)}</select></label>
             <label><span>Conductor</span><select value={form.conductor} onChange={(e) => updateField('conductor', e.target.value)}><option>Cu</option><option>Al</option></select></label>
