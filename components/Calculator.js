@@ -174,7 +174,14 @@ export function Calculator() {
           <div className="grid two-col">
             <label><span>Supply</span><select value={form.supply} onChange={(e) => updateField('supply', e.target.value)}><option value="1P">1φ</option><option value="3P">3φ</option></select></label>
             <label><span>Circuit type</span><select value={form.circuitType} onChange={(e) => updateField('circuitType', e.target.value)}><option value="lighting">Lighting (3% Vd limit)</option><option value="other">Other — power, sockets, submain (5% Vd limit)</option></select></label>
-            <label><span>Installation method</span><select value={form.installationMethod} onChange={(e) => updateField('installationMethod', e.target.value)}><option value="A">Method A</option><option value="B">Method B</option><option value="C">Method C</option><option value="100">Ref 100</option><option value="102">Ref 102</option><option value="103">Ref 103</option></select></label>
+            <label className="full"><span>Installation method (BS 7671 Appendix 4)</span><select value={form.installationMethod} onChange={(e) => updateField('installationMethod', e.target.value)}>
+                <option value="A">Method A — Enclosed in insulated wall or ceiling (worst derate, Cm 0.67)</option>
+                <option value="B">Method B — In conduit on wall, trunking, or buried in non-insulating wall (Cm 0.79)</option>
+                <option value="C">Method C — Clipped direct to wall or ceiling surface (reference, Cm 1.0)</option>
+                <option value="100">Ref 100 — In free air, not touching a surface (Cm 0.97)</option>
+                <option value="102">Ref 102 — On a cable tray or ladder, touching (Cm 1.0)</option>
+                <option value="103">Ref 103 — On a cable tray or ladder, spaced (Cm 1.03)</option>
+              </select></label>
             <label><span>Ambient temp (°C)</span><input type="number" value={form.ambientTemp} onChange={(e) => updateField('ambientTemp', Number(e.target.value))} /></label>
             <label><span>Grouping</span><input type="number" min="1" max="6" value={form.grouping} onChange={(e) => updateField('grouping', Number(e.target.value))} /></label>
             {!CI_NOT_APPLICABLE.includes(form.installationMethod) && (
