@@ -49,16 +49,44 @@ const faqItems = [
     answer: 'BS 7671:2018+A2:2022 (the 18th Edition with Amendment 2). Always check you are working to the current edition.'
   },
   {
+    question: 'How do I size a cable to BS 7671?',
+    answer: 'Cable sizing to BS 7671 involves five steps: (1) Calculate the design current Ib from the load. (2) Select a protective device rating In ≥ Ib. (3) Apply correction factors for ambient temperature (Ca), grouping (Cg), thermal insulation (Ci) and installation method (Cm) to find the required tabulated current It = In ÷ (Ca × Cg × Ci × Cm). (4) Select the smallest cable whose tabulated current-carrying capacity ≥ It. (5) Verify voltage drop and adiabatic checks pass. Our cable size calculator automates all five steps.'
+  },
+  {
+    question: 'What is the voltage drop limit for a power circuit in BS 7671?',
+    answer: 'BS 7671 Appendix 12 sets the default maximum voltage drop at 5% of the nominal supply voltage for power circuits — that is 11.5 V on a 230 V single-phase supply or 20 V on a 400 V three-phase supply. For lighting circuits the limit is 3% (6.9 V on 230 V). These are default limits; tighter limits may apply for sensitive equipment or where the designer specifies otherwise.'
+  },
+  {
+    question: 'What is the adiabatic equation and when do I use it?',
+    answer: 'The adiabatic equation (BS 7671 Reg 543.1.3) is S = (I²t)^0.5 ÷ k, where S is the minimum conductor cross-sectional area in mm², I is the fault current in amps, t is the disconnection time in seconds, and k is a material constant from BS 7671 Tables 54.2–54.4 (115 for copper/PVC, 143 for copper/XLPE). It is used to verify that the CPC (earth wire) can withstand the energy of a fault without damage.'
+  },
+  {
+    question: 'What is Zs and why does it matter?',
+    answer: 'Zs is the earth fault loop impedance — the total impedance of the path that fault current follows from the source, through the protective conductor, and back to source. A lower Zs means more fault current flows, which causes the protective device to operate faster. BS 7671 Tables 41.2–41.4 give maximum permissible Zs values for each device type and rating to ensure disconnection within the required time (0.4 s for socket circuits, 5 s for fixed equipment in TN systems).'
+  },
+  {
     question: 'Why is the Zs tool limited to 0.4 s disconnection?',
     answer: '0.4 s applies to socket outlet circuits and other circuits up to 32 A in TN systems — the most common domestic and light commercial scenario. 5 s values for fixed equipment and submains are not yet included. Check BS 7671 Tables 41.2–41.4 directly for 5 s values.'
   },
   {
     question: 'Who built these tools?',
-    answer: 'EOC London — a London-based electrical contractor specialising in domestic, commercial and EV charging installations. We built these tools to help electricians and engineers with preliminary design checks.'
+    answer: 'EOC London — a London-based electrical contractor specialising in domestic, commercial and EV charging installations across London. We built these tools to help electricians and engineers with preliminary BS 7671 design checks.'
   }
 ];
 
 export default function HomePage() {
+  const softwareJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'EOC BS 7671 Electrical Design Tools',
+    applicationCategory: 'UtilitiesApplication',
+    operatingSystem: 'Web',
+    url: 'https://tools.eoclondon.com',
+    description: 'Free BS 7671 cable sizing, voltage drop, adiabatic CPC and Zs calculators for UK electricians and electrical designers.',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'GBP' },
+    author: { '@type': 'Organization', name: 'Electricians On Call', url: 'https://www.eoclondon.com' },
+  };
+
   const faqJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
@@ -107,6 +135,7 @@ export default function HomePage() {
 
       <LeadCapture />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareJsonLd) }} />
     </main>
   );
 }
