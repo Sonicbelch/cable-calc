@@ -39,10 +39,11 @@ const DISTANCES = [
 ];
 
 const CABLE_RUNS = [
-  { id: 'clipped', label: 'Clipped to wall or ceiling',    detail: 'Surface-mounted, not enclosed',  method: 'C' },
-  { id: 'conduit', label: 'In a conduit or trunking',      detail: 'Enclosed in plastic conduit',    method: 'B' },
-  { id: 'wall',    label: 'Buried in wall or plaster',     detail: 'Behind plasterboard or render',  method: 'B' },
-  { id: 'floor',   label: 'Under floor or in joist',       detail: 'In floor void or joist notch',   method: 'B' },
+  { id: 'clipped',    label: 'Clipped to wall or ceiling',         detail: 'Surface-mounted, not enclosed',                           method: 'C' },
+  { id: 'conduit',    label: 'In a conduit or trunking',           detail: 'Enclosed in plastic conduit or trunking',                 method: 'B' },
+  { id: 'wall',       label: 'Buried in wall or plaster',          detail: 'Behind plasterboard or in render (non-insulated wall)',    method: 'B' },
+  { id: 'insulated',  label: 'In an insulated wall or ceiling',    detail: 'Touching or enclosed by thermal insulation — Method A',   method: 'A' },
+  { id: 'floor',      label: 'Under floor or in joist',            detail: 'In floor void or joist notch',                           method: 'B' },
 ];
 
 function buildCalcInputs(appliance, distanceObj, cableRunObj, phase) {
@@ -265,7 +266,7 @@ export function SimpleCalculator() {
                     <strong>Correction factor (CF):</strong> {results.cf.toFixed(3)}<br />
                     <span className="workings-note">
                       Ca × Cg × Ci × Cm = {results.ca} × {results.cg} × {results.ci} × {results.cm}
-                      &nbsp;(30°C ambient · 1 circuit · no thermal insulation · Method {calcInputs.installationMethod})
+                      &nbsp;(30°C ambient · 1 circuit · Method {calcInputs.installationMethod}{calcInputs.installationMethod === 'A' ? ' — thermally insulated wall/ceiling' : ''})
                     </span>
                   </p>
                   <p className="workings">
@@ -295,7 +296,7 @@ export function SimpleCalculator() {
               </details>
 
               <p className="simple-disclaimer">
-                This is a preliminary guide only. All electrical work must be installed and certified by a qualified electrician. Results assume 30°C ambient temperature, a single ungrouped circuit, and no thermal insulation along the cable route.
+                This is a preliminary guide only. All electrical work must be installed and certified by a qualified electrician. Results assume 30°C ambient temperature and a single ungrouped circuit. If the cable passes through thermal insulation, select "In an insulated wall or ceiling" to apply the BS 7671 Method A derating.
               </p>
             </section>
           )}
