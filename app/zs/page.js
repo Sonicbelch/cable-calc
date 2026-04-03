@@ -124,7 +124,7 @@ export default function ZsPage() {
               <strong>Disconnection time</strong>
               <span>0.4 s (TN socket/lighting circuits ≤ 32 A)</span>
               <p className="workings">
-                These values are for 0.4 s disconnection per BS 7671 Table 41.1, applicable to 230 V socket outlet circuits and other circuits ≤ 32 A in TN systems. For final circuits supplying only fixed equipment (> 32 A), or submains, 5 s disconnection applies — Zs limits will be higher. Refer to BS 7671 Tables 41.2–41.4 directly for 5 s values.
+                These values are for 0.4 s disconnection per BS 7671 Table 41.1, applicable to 230 V socket outlet circuits and other circuits ≤ 32 A in TN systems. For final circuits supplying only fixed equipment (&gt; 32 A), or submains, 5 s disconnection applies — Zs limits will be higher. Refer to BS 7671 Tables 41.2–41.4 directly for 5 s values.
               </p>
             </div>
           </div>

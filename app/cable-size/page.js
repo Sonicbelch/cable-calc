@@ -1,4 +1,4 @@
-import { Calculator } from '@/components/Calculator';
+import { CableSizeApp } from '@/components/CableSizeApp';
 import { LeadCapture } from '@/components/LeadCapture';
 import { SiteNav } from '@/components/SiteNav';
 
@@ -23,7 +23,7 @@ export default function CableSizePage() {
           <p className="lead">Calculate corrected current-carrying capacity (Iz), verify the Ib ≤ In ≤ Iz device chain, voltage drop and adiabatic CPC size. Covers single-phase and three-phase circuits.</p>
         </div>
       </section>
-      <Calculator />
+      <CableSizeApp />
       <LeadCapture />
     </main>
   );
