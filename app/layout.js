@@ -27,7 +27,12 @@ export default function RootLayout({ children }) {
           gtag('config', '${GA_ID}', { cookie_flags: 'SameSite=None;Secure' });
         `}} />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <footer style={{textAlign:'center',padding:'24px 16px',marginTop:'40px',fontSize:'0.85rem',color:'#666',borderTop:'1px solid #e5e7eb'}}>
+          Any comments or suggestions? Get in touch — <a href="mailto:info@eoclondon.com" style={{color:'#1a73e8'}}>info@eoclondon.com</a>
+        </footer>
+      </body>
     </html>
   );
 }
