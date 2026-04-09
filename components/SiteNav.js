@@ -5,6 +5,7 @@ const tools = [
   { href: '/voltage-drop', label: 'Voltage drop' },
   { href: '/adiabatic', label: 'Adiabatic' },
   { href: '/zs', label: 'Zs / disconnection' },
+  { href: '/ev-charging-cost', label: 'EV charging cost' },
 ];
 
 export function SiteNav({ current }) {

@@ -7,5 +7,6 @@ export default function sitemap() {
     { url: `${base}/voltage-drop`,   lastModified: now, changeFrequency: 'monthly',  priority: 0.8 },
     { url: `${base}/adiabatic`,      lastModified: now, changeFrequency: 'monthly',  priority: 0.8 },
     { url: `${base}/zs`,             lastModified: now, changeFrequency: 'monthly',  priority: 0.8 },
+    { url: `${base}/ev-charging-cost`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
   ];
 }
