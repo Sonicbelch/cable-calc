@@ -6,6 +6,7 @@ const tools = [
   { href: '/adiabatic', label: 'Adiabatic' },
   { href: '/zs', label: 'Zs / disconnection' },
   { href: '/ev-charging-cost', label: 'EV charging cost' },
+  { href: '/pat-cert', label: 'PAT cert' },
 ];
 
 export function SiteNav({ current }) {
