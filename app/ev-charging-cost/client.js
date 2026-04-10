@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { SiteNav } from '../../components/SiteNav';
 
 const EV_MODELS = [
@@ -64,9 +65,12 @@ export function EVChargingClient() {
     return { topUpKwh, topUpCost, fullChargeKwh, fullChargeCost, costPerMile, monthlyCost, costPer100Miles };
   }, [batteryKwh, tariffPence, pct]);
 
+  const searchParams = useSearchParams();
+  const isEmbed = searchParams.get('embed') === 'true';
+
   return (
     <main className="page">
-      <SiteNav current="/ev-charging-cost" />
+      {!isEmbed && <SiteNav current="/ev-charging-cost" />}
 
       <section className="hero hero-slim" style={{ marginBottom: '32px' }}>
         <div>
