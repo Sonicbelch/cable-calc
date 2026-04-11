@@ -25,6 +25,7 @@ const EV_MODELS = [
 
 const MILES_PER_KWH = 3.5;
 const MONTHLY_MILES = 800;
+const LITRES_PER_GALLON = 4.54609;
 
 function fmt(pounds) {
   if (pounds < 1) return `${Math.round(pounds * 100)}p`;
@@ -40,6 +41,8 @@ export function EVChargingClient() {
   const [manualKwh, setManualKwh] = useState('');
   const [tariff, setTariff] = useState('24');
   const [currentPct, setCurrentPct] = useState('20');
+  const [petrolMpg, setPetrolMpg] = useState('40');
+  const [petrolPence, setPetrolPence] = useState('145');
 
   const selected = EV_MODELS[modelIdx];
   const isOther = selected.kwh === null;
@@ -62,8 +65,25 @@ export function EVChargingClient() {
 
     const costPer100Miles = costPerMile * 100;
 
-    return { topUpKwh, topUpCost, fullChargeKwh, fullChargeCost, costPerMile, monthlyCost, costPer100Miles };
-  }, [batteryKwh, tariffPence, pct]);
+    // Petrol comparison
+    const mpg = parseFloat(petrolMpg) || 0;
+    const petrolPencePerLitre = parseFloat(petrolPence) || 0;
+    let petrolCostPerMile = null;
+    let petrolMonthlyCost = null;
+    let petrolAnnualCost = null;
+    let evAnnualCost = null;
+    let annualSaving = null;
+    if (mpg && petrolPencePerLitre) {
+      const litresPerMile = LITRES_PER_GALLON / mpg;
+      petrolCostPerMile = litresPerMile * petrolPencePerLitre / 100;
+      petrolMonthlyCost = MONTHLY_MILES * petrolCostPerMile;
+      petrolAnnualCost = petrolMonthlyCost * 12;
+      evAnnualCost = monthlyCost * 12;
+      annualSaving = petrolAnnualCost - evAnnualCost;
+    }
+
+    return { topUpKwh, topUpCost, fullChargeKwh, fullChargeCost, costPerMile, monthlyCost, costPer100Miles, petrolCostPerMile, petrolMonthlyCost, petrolAnnualCost, evAnnualCost, annualSaving };
+  }, [batteryKwh, tariffPence, pct, petrolMpg, petrolPence]);
 
   const searchParams = useSearchParams();
   const isEmbed = searchParams.get('embed') === 'true';
@@ -198,6 +218,58 @@ export function EVChargingClient() {
               </label>
             </div>
 
+            {/* Petrol comparison divider */}
+            <div style={{ borderTop: '1px solid var(--border)', paddingTop: '20px', marginTop: '4px' }}>
+              <p style={{ margin: '0 0 16px', fontSize: '0.85rem', fontWeight: 700, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                ⛽ Compare with petrol
+              </p>
+              <div className="grid two-col" style={{ gap: '16px' }}>
+                <label style={{ display: 'grid', gap: '8px', fontSize: '0.95rem', fontWeight: 600, color: 'var(--text)' }}>
+                  Petrol car MPG
+                  <div style={{ position: 'relative' }}>
+                    <input
+                      type="number"
+                      min="10"
+                      max="120"
+                      step="1"
+                      value={petrolMpg}
+                      onChange={e => setPetrolMpg(e.target.value)}
+                      style={{ paddingRight: '52px', width: '100%', boxSizing: 'border-box' }}
+                    />
+                    <span style={{
+                      position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)',
+                      fontSize: '0.85rem', color: 'var(--muted)', pointerEvents: 'none', fontWeight: 500,
+                    }}>MPG</span>
+                  </div>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--muted)', fontWeight: 400 }}>
+                    UK average ~40 MPG
+                  </span>
+                </label>
+
+                <label style={{ display: 'grid', gap: '8px', fontSize: '0.95rem', fontWeight: 600, color: 'var(--text)' }}>
+                  Petrol price (p/litre)
+                  <div style={{ position: 'relative' }}>
+                    <input
+                      type="number"
+                      min="50"
+                      max="300"
+                      step="0.1"
+                      value={petrolPence}
+                      onChange={e => setPetrolPence(e.target.value)}
+                      style={{ paddingRight: '36px', width: '100%', boxSizing: 'border-box' }}
+                    />
+                    <span style={{
+                      position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)',
+                      fontSize: '0.85rem', color: 'var(--muted)', pointerEvents: 'none', fontWeight: 500,
+                    }}>p</span>
+                  </div>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--muted)', fontWeight: 400 }}>
+                    UK average ~145p/litre (2025)
+                  </span>
+                </label>
+              </div>
+            </div>
+
           </div>
         </section>
 
@@ -260,7 +332,7 @@ export function EVChargingClient() {
               {/* Monthly cost */}
               <div className="metric-card" style={{ gridColumn: '1 / -1', background: '#dff7e8', border: '1px solid #a8e6c0' }}>
                 <div style={{ fontSize: '0.8rem', color: '#0d6b33', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '6px' }}>
-                  Estimated monthly cost
+                  Estimated monthly cost (EV)
                 </div>
                 <div style={{ fontSize: '2rem', fontWeight: 800, color: '#0d6b33', lineHeight: 1 }}>
                   {fmtPounds(results.monthlyCost)}
@@ -269,6 +341,75 @@ export function EVChargingClient() {
                   Based on {MONTHLY_MILES} miles/month (UK average)
                 </div>
               </div>
+
+              {/* Petrol comparison */}
+              {results.petrolCostPerMile !== null && (
+                <>
+                  <div style={{
+                    gridColumn: '1 / -1',
+                    borderTop: '1px solid var(--border)',
+                    paddingTop: '14px',
+                    fontSize: '0.8rem',
+                    fontWeight: 700,
+                    color: 'var(--muted)',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                  }}>
+                    ⛽ Petrol equivalent
+                  </div>
+
+                  <div className="metric-card">
+                    <div style={{ fontSize: '0.75rem', color: 'var(--muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '6px' }}>
+                      Petrol cost/mile
+                    </div>
+                    <div style={{ fontSize: '1.7rem', fontWeight: 800, color: 'var(--text)', lineHeight: 1 }}>
+                      {fmt(results.petrolCostPerMile)}
+                    </div>
+                    <div style={{ fontSize: '0.82rem', color: 'var(--muted)', marginTop: '6px' }}>
+                      vs {fmt(results.costPerMile)} electric
+                    </div>
+                  </div>
+
+                  <div className="metric-card">
+                    <div style={{ fontSize: '0.75rem', color: 'var(--muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '6px' }}>
+                      Petrol monthly cost
+                    </div>
+                    <div style={{ fontSize: '1.7rem', fontWeight: 800, color: 'var(--text)', lineHeight: 1 }}>
+                      {fmtPounds(results.petrolMonthlyCost)}
+                    </div>
+                    <div style={{ fontSize: '0.82rem', color: 'var(--muted)', marginTop: '6px' }}>
+                      vs {fmtPounds(results.monthlyCost)} electric
+                    </div>
+                  </div>
+
+                  {/* Annual saving — hero card */}
+                  <div className="metric-card" style={{
+                    gridColumn: '1 / -1',
+                    background: results.annualSaving >= 0 ? 'linear-gradient(135deg, #1040a0 0%, #185adb 100%)' : '#fff3cd',
+                    border: results.annualSaving >= 0 ? 'none' : '1px solid #ffc107',
+                    color: results.annualSaving >= 0 ? '#fff' : '#856404',
+                  }}>
+                    <div style={{
+                      fontSize: '0.8rem',
+                      fontWeight: 700,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.05em',
+                      marginBottom: '6px',
+                      opacity: 0.85,
+                    }}>
+                      {results.annualSaving >= 0 ? '💰 Annual saving by going electric' : '⚠️ EV costs more at these rates'}
+                    </div>
+                    <div style={{ fontSize: '2.4rem', fontWeight: 800, lineHeight: 1 }}>
+                      {fmtPounds(Math.abs(results.annualSaving))}
+                      <span style={{ fontSize: '1rem', fontWeight: 600, opacity: 0.8, marginLeft: '8px' }}>/ year</span>
+                    </div>
+                    <div style={{ fontSize: '0.85rem', marginTop: '8px', opacity: 0.85 }}>
+                      EV: {fmtPounds(results.evAnnualCost)}/yr &nbsp;·&nbsp; Petrol: {fmtPounds(results.petrolAnnualCost)}/yr
+                      &nbsp;·&nbsp; {MONTHLY_MILES * 12} miles/year
+                    </div>
+                  </div>
+                </>
+              )}
 
             </div>
           )}
@@ -284,6 +425,12 @@ export function EVChargingClient() {
                 <p><strong>Top-up:</strong> {batteryKwh} × {((100 - pct) / 100).toFixed(3)} × {tariffPence}p ÷ 100 = {fmtPounds(results.topUpCost)}</p>
                 <p><strong>Per mile:</strong> {tariffPence}p ÷ {MILES_PER_KWH} miles/kWh = {(results.costPerMile * 100).toFixed(2)}p</p>
                 <p><strong>Monthly:</strong> {MONTHLY_MILES} miles × {(results.costPerMile * 100).toFixed(2)}p ÷ 100 = {fmtPounds(results.monthlyCost)}</p>
+                {results.petrolCostPerMile !== null && (
+                  <>
+                    <p><strong>Petrol per mile:</strong> {LITRES_PER_GALLON.toFixed(3)}L/gal ÷ {petrolMpg} MPG × {petrolPence}p/L = {(results.petrolCostPerMile * 100).toFixed(2)}p</p>
+                    <p><strong>Annual saving:</strong> ({fmtPounds(results.petrolMonthlyCost)} − {fmtPounds(results.monthlyCost)}) × 12 = {fmtPounds(Math.abs(results.annualSaving))}</p>
+                  </>
+                )}
                 <p style={{ marginTop: '8px', fontStyle: 'italic' }}>
                   Real-world efficiency assumed at {MILES_PER_KWH} miles/kWh (typical UK average).
                   Actual range varies with speed, temperature and driving style.
