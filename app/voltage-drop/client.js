@@ -26,8 +26,8 @@ export function VoltageDropClient() {
   );
 
   const voltageDrop = useMemo(
-    () => computeVoltageDrop(selectedCable, form.designCurrent, form.length, form.supply),
-    [selectedCable, form.designCurrent, form.length, form.supply]
+    () => computeVoltageDrop(selectedCable, form.designCurrent, form.length, form.supply, form.conductor),
+    [selectedCable, form.designCurrent, form.length, form.supply, form.conductor]
   );
 
   const voltageDropLimit = useMemo(
@@ -36,7 +36,9 @@ export function VoltageDropClient() {
   );
 
   const nominalV = form.supply === '3P' ? 400 : 230;
-  const mv = form.supply === '3P' ? selectedCable.mvA3 : selectedCable.mvA;
+  const mv = form.conductor === 'Al'
+    ? (form.supply === '3P' ? selectedCable.mvA3_Al : selectedCable.mvA_Al)
+    : (form.supply === '3P' ? selectedCable.mvA3 : selectedCable.mvA);
   const pct = ((voltageDrop / nominalV) * 100).toFixed(2);
   const limitPct = form.circuitType === 'lighting' ? 3 : 5;
   const pass = voltageDrop <= voltageDropLimit;
