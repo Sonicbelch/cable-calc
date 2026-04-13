@@ -56,7 +56,7 @@ const initialState = {
   apparentPower: 6000,
   applianceBasket: [1500, 1200],
   basketText: defaultBasket,
-  faultCurrent: 800,
+  faultCurrent: 1000,
   disconnectionTime: 0.4
 };
 
