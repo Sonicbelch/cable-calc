@@ -56,7 +56,7 @@ const initialState = {
   apparentPower: 6000,
   applianceBasket: [1500, 1200],
   basketText: defaultBasket,
-  faultCurrent: 3000,
+  faultCurrent: 800,
   disconnectionTime: 0.4
 };
 
@@ -124,8 +124,8 @@ function AdiabaticWorkings({ form, adiabaticRequired, selectedCable }) {
   const k = adiabaticK[form.conductor][form.insulation];
   return (
     <p className="workings">
-      S = (I² × t)^0.5 ÷ k = ({form.faultCurrent}² × {form.disconnectionTime})^0.5 ÷ {k} = <strong>{adiabaticRequired.toFixed(2)} mm²</strong>
-      <br /><span className="workings-note">k = {k} for {form.conductor}/{form.insulation} conductor (BS 7671 Appendix 3, Table 54.2–54.4). Selected cable: {selectedCable ? selectedCable.size : '—'} mm² — must be ≥ {adiabaticRequired.toFixed(2)} mm²</span>
+      S = √(I² × t) ÷ k = √({form.faultCurrent}² × {form.disconnectionTime}) ÷ {k} = <strong>{adiabaticRequired.toFixed(2)} mm²</strong>
+      <br /><span className="workings-note">k = {k} for {form.conductor}/{form.insulation} (BS 7671 App. 3, Tables 54.2–54.4). Minimum CPC cross-section must be ≥ {adiabaticRequired.toFixed(2)} mm². For flat twin &amp; earth, the CPC is smaller than the live conductor — verify CPC size separately. For singles in conduit, CPC = live conductor size is conservative.</span>
     </p>
   );
 }
@@ -163,6 +163,11 @@ export function Calculator() {
 
   const deviceChainPass = ib <= form.protectiveDeviceRating && form.protectiveDeviceRating <= iz;
   const voltageDropPass = voltageDrop <= voltageDropLimit;
+  // Adiabatic check: the CPC (earth conductor) must satisfy S = √(I²t)/k.
+  // In flat twin & earth, the CPC is smaller than the live conductor.
+  // We flag pass only when the selected cable size itself meets the requirement,
+  // which is conservative (assumes CPC = live conductor, e.g. singles in conduit).
+  // For twin & earth users must verify the CPC size separately.
   const adiabaticPass = selectedCable ? selectedCable.size >= adiabaticRequired : false;
 
   return (
@@ -239,8 +244,8 @@ export function Calculator() {
               <p className="workings">{voltageDrop.toFixed(2)} V vs {voltageDropLimit.toFixed(2)} V limit — BS 7671 Appendix 12</p>
             </div>
             <div className={`check-card ${adiabaticPass ? 'pass' : 'fail'}`}>
-              <strong>Adiabatic (CPC size)</strong>
-              <span>{adiabaticPass ? `Pass — S ≥ ${adiabaticRequired.toFixed(2)} mm²` : `Needs ≥ ${adiabaticRequired.toFixed(2)} mm²`}</span>
+              <strong>Adiabatic — min. CPC size</strong>
+              <span>{adiabaticRequired.toFixed(2)} mm² required</span>
               <AdiabaticWorkings form={form} adiabaticRequired={adiabaticRequired} selectedCable={selectedCable} />
             </div>
             <div className="check-card placeholder">

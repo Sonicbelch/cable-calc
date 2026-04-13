@@ -89,6 +89,35 @@ export function SimpleCalculator() {
   const results = useMemo(() => {
     if (!calcInputs || !appliance) return null;
     const ib = computeIb(calcInputs);
+
+    // Ring final circuits: BS 7671 mandates 2.5mm² on a 32A MCB.
+    // Each leg of the ring carries ~half the load current, so radial sizing
+    // logic overstates the requirement — force 2.5mm² directly.
+    if (appliance.circuitType === 'ring-final') {
+      const cable = cableOptions.find(c => c.size === 2.5);
+      if (!cable) return { ib, cable: null, noMatch: true };
+      const iz      = computeIz(cable, calcInputs);
+      const vd      = computeVoltageDrop(cable, ib, calcInputs.length, calcInputs.supply);
+      const vdLimit = getVoltageDropLimit(calcInputs.circuitType, calcInputs.supply);
+      const cf      = getCorrectionFactor(calcInputs);
+      const mcb     = calcInputs.protectiveDeviceRating;
+      const ca      = snapFactor(ambientTempFactors[calcInputs.insulation], calcInputs.ambientTemp);
+      const cg      = snapFactor(groupingFactors, calcInputs.grouping);
+      const ci      = calcInputs.insulationFactor;
+      const cm      = installationMethodFactor[calcInputs.installationMethod];
+      return {
+        ib, cable, iz, vd, vdLimit, cf, mcb,
+        deviceChainPass: ib <= mcb && mcb <= iz,
+        vdPass: vd <= vdLimit,
+        ca, cg, ci, cm,
+        tabulated: cable.pvc,
+        mv: calcInputs.supply === '3P' ? cable.mvA3 : cable.mvA,
+        nomV: calcInputs.supply === '3P' ? 400 : 230,
+        requiredIt: mcb / Math.max(cf, 0.01),
+        isRingFinal: true,
+      };
+    }
+
     const rawCable = selectCable(calcInputs, ib);
 
     let cable = rawCable;
@@ -236,9 +265,9 @@ export function SimpleCalculator() {
                 <strong>{results.mcb}A MCB</strong>.
               </p>
 
-              {appliance.ringNote && (
+              {results.isRingFinal && (
                 <div className="simple-note-box">
-                  <strong>Ring main note:</strong> Standard domestic ring final circuits use 2.5 mm² cable wired as a continuous ring — each leg only carries approximately half the total current. This simplified tool models the circuit as a single radial cable and may suggest a larger size. Your electrician will design the ring final to BS 7671 Appendix 15.
+                  <strong>Ring main note:</strong> A standard domestic ring final circuit uses 2.5 mm² cable wired as a continuous ring on a 32A MCB (BS 7671 Appendix 15). Each leg carries approximately half the total load current, so standard radial sizing rules don&apos;t apply — 2.5 mm² is the correct BS 7671 answer regardless of distance.
                 </div>
               )}
 
