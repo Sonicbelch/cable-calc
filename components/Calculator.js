@@ -187,26 +187,26 @@ export function Calculator() {
                 <option value="102">Ref 102 — On a cable tray or ladder, touching (Cm 1.0)</option>
                 <option value="103">Ref 103 — On a cable tray or ladder, spaced (Cm 1.03)</option>
               </select></label>
-            <label><span>Ambient temp (°C)</span><input type="number" value={form.ambientTemp} onChange={(e) => updateField('ambientTemp', Number(e.target.value))} /></label>
-            <label><span>Grouping</span><input type="number" min="1" max="6" value={form.grouping} onChange={(e) => updateField('grouping', Number(e.target.value))} /></label>
+            <label><span>Ambient temp (°C)</span><input type="number" value={form.ambientTemp} onChange={(e) => updateField('ambientTemp', Number(e.target.value))} onFocus={(e) => e.target.select()} /></label>
+            <label><span>Grouping</span><input type="number" min="1" max="6" value={form.grouping} onChange={(e) => updateField('grouping', Number(e.target.value))} onFocus={(e) => e.target.select()} /></label>
             {!CI_NOT_APPLICABLE.includes(form.installationMethod) && (
               <label className="full"><span>Ci — Thermal insulation factor</span><select value={form.insulationFactor} onChange={(e) => updateField('insulationFactor', Number(e.target.value))}>{CI_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}</select></label>
             )}
-            <label><span>Length (m)</span><input type="number" value={form.length} onChange={(e) => updateField('length', Number(e.target.value))} /></label>
+            <label><span>Length (m)</span><input type="number" value={form.length} onChange={(e) => updateField('length', Number(e.target.value))} onFocus={(e) => e.target.select()} /></label>
             <label className="full"><span>Cable type</span><select value={form.cableType} onChange={(e) => updateField('cableType', e.target.value)}>{CABLE_TYPES.map(t => <option key={t.id} value={t.id}>{t.label}</option>)}</select></label>
             <label><span>Conductor</span><select value={form.conductor} onChange={(e) => updateField('conductor', e.target.value)}><option>Cu</option><option>Al</option></select></label>
-            <label><span>Protective device rating — In (A)</span><input type="number" value={form.protectiveDeviceRating} onChange={(e) => updateField('protectiveDeviceRating', Number(e.target.value))} /></label>
+            <label><span>Protective device rating — In (A)</span><input type="number" value={form.protectiveDeviceRating} onChange={(e) => updateField('protectiveDeviceRating', Number(e.target.value))} onFocus={(e) => e.target.select()} /></label>
             <label><span>Load input mode</span><select value={form.loadInputMode} onChange={(e) => updateField('loadInputMode', e.target.value)}><option value="A">Design current (A)</option><option value="power">W / kW with PF + η</option><option value="apparent">VA / kVA</option><option value="basket">Appliance basket</option></select></label>
-            {form.loadInputMode === 'A' && <label><span>Ib input (A)</span><input type="number" value={form.designCurrent} onChange={(e) => updateField('designCurrent', Number(e.target.value))} /></label>}
-            {form.loadInputMode === 'power' && <><label><span>Power (W)</span><input type="number" value={form.powerWatts} onChange={(e) => updateField('powerWatts', Number(e.target.value))} /></label><label><span>Power factor</span><input type="number" step="0.01" value={form.powerFactor} onChange={(e) => updateField('powerFactor', Number(e.target.value))} /></label><label><span>Efficiency</span><input type="number" step="0.01" value={form.efficiency} onChange={(e) => updateField('efficiency', Number(e.target.value))} /></label></>}
-            {form.loadInputMode === 'apparent' && <label><span>Apparent power (VA)</span><input type="number" value={form.apparentPower} onChange={(e) => updateField('apparentPower', Number(e.target.value))} /></label>}
+            {form.loadInputMode === 'A' && <label><span>Ib input (A)</span><input type="number" value={form.designCurrent} onChange={(e) => updateField('designCurrent', Number(e.target.value))} onFocus={(e) => e.target.select()} /></label>}
+            {form.loadInputMode === 'power' && <><label><span>Power (W)</span><input type="number" value={form.powerWatts} onChange={(e) => updateField('powerWatts', Number(e.target.value))} onFocus={(e) => e.target.select()} /></label><label><span>Power factor</span><input type="number" step="0.01" value={form.powerFactor} onChange={(e) => updateField('powerFactor', Number(e.target.value))} onFocus={(e) => e.target.select()} /></label><label><span>Efficiency</span><input type="number" step="0.01" value={form.efficiency} onChange={(e) => updateField('efficiency', Number(e.target.value))} onFocus={(e) => e.target.select()} /></label></>}
+            {form.loadInputMode === 'apparent' && <label><span>Apparent power (VA)</span><input type="number" value={form.apparentPower} onChange={(e) => updateField('apparentPower', Number(e.target.value))} onFocus={(e) => e.target.select()} /></label>}
             {form.loadInputMode === 'basket' && <label className="full"><span>Appliance basket (W, comma-separated)</span><textarea value={form.basketText} onChange={(e) => {
               const basketText = e.target.value;
               updateField('basketText', basketText);
               updateField('applianceBasket', basketText.split(',').map((item) => Number(item.trim())).filter((item) => !Number.isNaN(item) && item > 0));
             }} /></label>}
-            <label><span>Fault current (A)</span><input type="number" value={form.faultCurrent} onChange={(e) => updateField('faultCurrent', Number(e.target.value))} /></label>
-            <label><span>Disconnection time (s)</span><input type="number" step="0.01" value={form.disconnectionTime} onChange={(e) => updateField('disconnectionTime', Number(e.target.value))} /></label>
+            <label><span>Fault current (A)</span><input type="number" value={form.faultCurrent} onChange={(e) => updateField('faultCurrent', Number(e.target.value))} onFocus={(e) => e.target.select()} /></label>
+            <label><span>Disconnection time (s)</span><input type="number" step="0.01" value={form.disconnectionTime} onChange={(e) => updateField('disconnectionTime', Number(e.target.value))} onFocus={(e) => e.target.select()} /></label>
           </div>
         </div>
 

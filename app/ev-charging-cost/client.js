@@ -137,6 +137,7 @@ export function EVChargingClient() {
                   step="0.1"
                   value={manualKwh}
                   onChange={e => setManualKwh(e.target.value)}
+                  onFocus={e => e.target.select()}
                   placeholder="e.g. 64"
                 />
               </label>
@@ -173,6 +174,7 @@ export function EVChargingClient() {
                     step="0.1"
                     value={tariff}
                     onChange={e => setTariff(e.target.value)}
+                    onFocus={e => e.target.select()}
                     style={{ paddingRight: '52px', width: '100%', boxSizing: 'border-box' }}
                   />
                   <span style={{
@@ -202,6 +204,7 @@ export function EVChargingClient() {
                     step="1"
                     value={currentPct}
                     onChange={e => setCurrentPct(e.target.value)}
+                    onFocus={e => e.target.select()}
                     style={{ paddingRight: '36px', width: '100%', boxSizing: 'border-box' }}
                   />
                   <span style={{
@@ -234,6 +237,7 @@ export function EVChargingClient() {
                       step="1"
                       value={petrolMpg}
                       onChange={e => setPetrolMpg(e.target.value)}
+                      onFocus={e => e.target.select()}
                       style={{ paddingRight: '52px', width: '100%', boxSizing: 'border-box' }}
                     />
                     <span style={{
@@ -256,6 +260,7 @@ export function EVChargingClient() {
                       step="0.1"
                       value={petrolPence}
                       onChange={e => setPetrolPence(e.target.value)}
+                      onFocus={e => e.target.select()}
                       style={{ paddingRight: '36px', width: '100%', boxSizing: 'border-box' }}
                     />
                     <span style={{

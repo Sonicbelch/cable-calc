@@ -51,10 +51,10 @@ export function AdiabaticClient() {
           <h2>Circuit inputs</h2>
           <div className="grid two-col">
             <label><span>Prospective fault current If (A)</span>
-              <input type="number" value={form.faultCurrent} onChange={e => update('faultCurrent', Number(e.target.value))} />
+              <input type="number" value={form.faultCurrent} onChange={e => update('faultCurrent', Number(e.target.value))} onFocus={e => e.target.select()} />
             </label>
             <label><span>Disconnection time t (s)</span>
-              <input type="number" step="0.01" value={form.disconnectionTime} onChange={e => update('disconnectionTime', Number(e.target.value))} />
+              <input type="number" step="0.01" value={form.disconnectionTime} onChange={e => update('disconnectionTime', Number(e.target.value))} onFocus={e => e.target.select()} />
             </label>
             <label><span>Conductor material</span>
               <select value={form.conductor} onChange={e => update('conductor', e.target.value)}>

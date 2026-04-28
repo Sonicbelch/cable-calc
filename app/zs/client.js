@@ -74,6 +74,7 @@ export function ZsClient() {
                 placeholder="e.g. 0.85"
                 value={form.measuredZs}
                 onChange={e => update('measuredZs', e.target.value)}
+                onFocus={e => e.target.select()}
               />
             </label>
           </div>

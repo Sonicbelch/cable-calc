@@ -85,10 +85,10 @@ export function VoltageDropClient() {
               </select>
             </label>
             <label><span>Design current Ib (A)</span>
-              <input type="number" value={form.designCurrent} onChange={e => update('designCurrent', Number(e.target.value))} />
+              <input type="number" value={form.designCurrent} onChange={e => update('designCurrent', Number(e.target.value))} onFocus={e => e.target.select()} />
             </label>
             <label><span>One-way cable length (m)</span>
-              <input type="number" value={form.length} onChange={e => update('length', Number(e.target.value))} />
+              <input type="number" value={form.length} onChange={e => update('length', Number(e.target.value))} onFocus={e => e.target.select()} />
             </label>
           </div>
         </div>

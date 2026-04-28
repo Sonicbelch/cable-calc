@@ -449,6 +449,7 @@ export function PATCertClient() {
                         type="number"
                         value={row.insulation}
                         onChange={e => updateRow(row.id, 'insulation', e.target.value)}
+                        onFocus={e => e.target.select()}
                         min="0"
                         step="0.01"
                         placeholder={isII ? '≥ 2.00' : '≥ 1.00'}
