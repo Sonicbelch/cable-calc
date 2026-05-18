@@ -7,6 +7,7 @@ const tools = [
   { href: '/zs', label: 'Zs / disconnection' },
   { href: '/ev-charging-cost', label: 'EV charging cost' },
   { href: '/pat-cert', label: 'PAT cert' },
+  { href: '/minor-works-cert', label: 'Minor works cert' },
 ];
 
 export function SiteNav({ current }) {
